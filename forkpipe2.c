@@ -45,6 +45,7 @@ void convert_cmd(){
 
 void run_cmd(char *str)
 {
+    printf("%s", str[0]);
     execvp(str[0], str);
 }
 
@@ -73,15 +74,15 @@ int main()
                 int k=0, j=0, len=0;
                 char *token;
                 token = strtok(line," ");
-                while(token != NULL)
-                {
-                    len++;
-                    token = strtok(NULL, " ");
-                }
+                // while(token != NULL)
+                // {
+                //     len++;
+                //     token = strtok(NULL, " ");
+                // }
 
                 
 
-                while(token != "|")
+                while(!strcmp(token, "|"))
                 {
                     cmd1[k] = token;
                     // strcpy(cmd1[k], token);                // preparing array for command 1
@@ -91,33 +92,34 @@ int main()
                 cmd1[k] = '\0';
                 // token = strtok(NULL, " ");
 
-                while(token != NULL)
-                {
-                    cmd2[j] = token;
-                    // strcpy(cmd2[j], token);                // preparing array for command 2
-                    j++;
-                    token = strtok(NULL, " ");
-                }
+                // while(token != NULL)
+                // {
+                //     cmd2[j] = token;
+                //     // strcpy(cmd2[j], token);                // preparing array for command 2
+                //     j++;
+                //     token = strtok(NULL, " ");
+                // }
                 cmd2[j] = '\0';
-                // k=0;
-                // while(cmd1 != NULL)
-                //     printf("%s ", *cmd1[k++]);
+                k=0;
+                while(cmd1[k] != NULL)
+                    printf("%s ", cmd1[k++]);
 
                 if((pid = fork()) == 0)
                 {
-                    // close(1);
+                    close(1);
                     close(fd[0]);       // The left child will not read
                     dup(fd[1]);         // The left child stdout redirected to the pipe
+                    // write();
                     run_cmd(*cmd1);
                 }
-                if((pid = fork()) == 0)
-                {
-                    // sleep(2);
-                    // close(0);
-                    close(fd[1]);       // The right child will not write
-                    dup(fd[0]);         // The right child stdin redirected to the pipe
-                    run_cmd(*cmd2);
-                }
+                // if((pid = fork()) == 0)
+                // {
+                //     // sleep(2);
+                //     close(0);
+                //     close(fd[1]);       // The right child will not write
+                //     dup(fd[0]);         // The right child stdin redirected to the pipe
+                //     run_cmd(*cmd2);
+                // }
             }
             else{
                 // fit the command into *argv[]
